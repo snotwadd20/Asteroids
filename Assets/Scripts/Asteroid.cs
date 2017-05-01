@@ -21,9 +21,11 @@ public class Asteroid : MonoBehaviour
 	public bool explode = false;
 
 	// Use this for initialization
-	void Awake () 
+	void Start () 
 	{
-		
+		//Give force to scatter
+		Vector2 forceDir = new Vector2(Random.Range(-10,11), Random.Range(-10,11)).normalized;
+		GetComponent<Rigidbody2D>().velocity = forceDir * scatterForce / 2;
 	}//Awake
 	
 	// Update is called once per frame
@@ -88,7 +90,7 @@ public class Asteroid : MonoBehaviour
 
 		//Give force to scatter
 		Vector2 forceDir = new Vector2(Random.Range(-10,11), Random.Range(-10,11)).normalized;
-		asteroid.GetComponent<Rigidbody2D>().AddForce(forceDir * scatterForce);
+		asteroid.GetComponent<Rigidbody2D>().velocity = forceDir * scatterForce;
 
 	}//Spawn
 }//
