@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour
 		}//
 	}//Update
 
-	void Explode()
+	public void Explode()
 	{
 		if (type != Type.Small)
 		{
@@ -62,13 +62,6 @@ public class Asteroid : MonoBehaviour
 		Destroy(gameObject);
 	}//Explode
 
-	void OnCollisionEnter2D(Collision2D coll)
-	{
-		if (coll.gameObject.GetComponent<Bullet>())
-		{
-			Explode();
-		}//if
-	}//OnCollisionEnter2D
 
 	void Spawn(Asteroid prefab)
 	{
