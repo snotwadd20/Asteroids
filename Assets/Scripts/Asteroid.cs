@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour 
 {
-	public GameObject mediumPrefab = null;
-	public GameObject smallPrefab = null;
+	public Asteroid mediumPrefab = null;
+	public Asteroid smallPrefab = null;
+
+	public float speed = 10;
 
 	public int numMed = 3;
 	public int numSmall = 3;
 
+	public float scatterForce = 0.1f;
+
 	public enum Type {Large, Medium, Small}
 	public Type type = Type.Large;
+
+
+	public bool explode = false;
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -21,42 +29,73 @@ public class Asteroid : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		
+		if (explode)
+		{
+			Explode();
+			explode = false;
+		}//
 	}//Update
+
+	void Explode()
+	{
+		if (type != Type.Small)
+		{
+			int num = 0;
+			Asteroid prefab = mediumPrefab;
+			if (type == Type.Large)
+			{
+				num = numMed;
+				prefab = mediumPrefab;
+			}//if
+			else if (type == Type.Medium)
+			{
+				num = numSmall;
+				prefab = smallPrefab;
+			}//else if
+
+			for(int i=0; i < num; i++)
+			{
+				Spawn(prefab);
+			}//for
+		}//if
+
+		Destroy(gameObject);
+	}//Explode
 
 	void OnCollisionEnter2D(Collision2D coll)
 	{
-		if (type == Type.Small)
+		if (coll.gameObject.GetComponent<Bullet>())
 		{
-			Destroy(gameObject);
-			return;
+			Explode();
 		}//if
+	}//OnCollisionEnter2D
 
-		int num = 0;
-		GameObject prefab = mediumPrefab;
+	void Spawn(Asteroid prefab)
+	{
+		//Spawn at pos
+		Asteroid asteroid = Instantiate<Asteroid>(prefab, transform.position, Quaternion.identity);
+
 		if (type == Type.Large)
 		{
-			num = numMed;
-			prefab = mediumPrefab;
+			asteroid.type = Type.Medium;
 		}//if
 		else if (type == Type.Medium)
 		{
-			num = numSmall;
-			prefab = smallPrefab;
+			asteroid.type = Type.Small;
 		}//else if
 
-		for(int i=0; i < num; i++)
-		{
-			Spawn(prefab);
-		}//for
-	}//OnCollisionEnter2D
+		asteroid.mediumPrefab = mediumPrefab;
+		asteroid.smallPrefab = smallPrefab;
 
-	void Spawn(GameObject prefab)
-	{
-		//Spawn at pos
-		Instantiate(prefab, transform.position, Quaternion.identity);
+		asteroid.numMed = numMed;
+		asteroid.numSmall = numSmall;
+
+		asteroid.scatterForce = scatterForce;
+		asteroid.speed = speed;
 
 		//Give force to scatter
+		Vector2 forceDir = new Vector2(Random.Range(-10,11), Random.Range(-10,11)).normalized;
+		asteroid.GetComponent<Rigidbody2D>().AddForce(forceDir * scatterForce);
 
-	}//
+	}//Spawn
 }//
