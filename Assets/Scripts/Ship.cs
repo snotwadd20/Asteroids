@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Ship : MonoBehaviour 
 {
@@ -92,6 +93,28 @@ public class Ship : MonoBehaviour
 		// Otherwise, the object is invisible
 		return false;
 	}
+
+	void OnCollisionEnter2D(Collision2D coll)
+	{
+		Asteroid asteroid = coll.gameObject.GetComponent<Asteroid>();
+		if (asteroid != null)
+		{
+			Die();
+		}
+	}//
+
+	void Die()
+	{
+		Invoke("Reset", 2.0f);
+		Destroy(rb2d);
+		this.enabled = false;
+		GetComponent<Renderer>().enabled = false;
+	}//
+
+	void Reset()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}//Reset
 
 	void Shoot()
 	{
