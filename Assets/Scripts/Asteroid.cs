@@ -90,7 +90,7 @@ public class Asteroid : MonoBehaviour
 
 		//Give force to scatter
 		Vector2 forceDir = new Vector2(Random.Range(-10,11), Random.Range(-10,11)).normalized;
-		asteroid.GetComponent<Rigidbody2D>().velocity = forceDir * scatterForce;
+		asteroid.GetComponent<Rigidbody2D>().AddForce(forceDir * scatterForce /20);
 
 	}//Spawn
 }//
